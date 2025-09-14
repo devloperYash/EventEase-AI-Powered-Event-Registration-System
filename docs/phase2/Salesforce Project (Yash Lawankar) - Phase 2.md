@@ -76,3 +76,63 @@ sfdx force:org:open
 - Mon–Fri: 09:00–18:00 (example) → Set as Default
 
 ---
+## Prerequisites
+- Auth to a Dev Hub and sf CLI installed.
+- Project API version: see `sfdx-project.json` (currently `sourceApiVersion: 64.0`).
+
+## 1) Create a Scratch Org
+The definition file is at `config/project-scratch-def.json`.
+
+Important: We removed `companySettings` due to a known settings deploy error. If you previously added it and see a CompanySettings parse error, remove it and retry.
+
+```powershell
+sf org create scratch --definition-file config/project-scratch-def.json --alias EventEase --duration-days 7 --set-default
+```
+
+## 2) Deploy Roles (targeted)
+Deploy only the EventEase roles to avoid older role files or conflicts:
+
+```powershell
+sf project deploy start `
+  --source-dir "force-app/main/default/roles/EventEase_Admin.role-meta.xml" `
+  --source-dir "force-app/main/default/roles/EventEase_Event_Manager.role-meta.xml" `
+  --source-dir "force-app/main/default/roles/EventEase_Organizer.role-meta.xml" `
+  --target-org EventEase
+```
+
+Verify:
+```powershell
+sf data query --target-org EventEase `
+  --query "SELECT Id, Name, DeveloperName, ParentRoleId FROM UserRole WHERE Name LIKE 'EventEase%' ORDER BY Name"
+```
+
+## 3) Deploy Permission Set (AI)
+```powershell
+sf project deploy start --metadata PermissionSet:AI_Recommendations --target-org EventEase
+```
+
+Assign to the default user:
+```powershell
+sf org assign permset --name AI_Recommendations --target-org EventEase
+```
+
+Verify assignment:
+```powershell
+sf data query --target-org EventEase `
+  --query "SELECT Id, PermissionSet.Label, Assignee.Username FROM PermissionSetAssignment WHERE PermissionSet.Name = 'AI_Recommendations'"
+```
+
+## 4) Optional: Deploy Minimal Private Objects
+These are placeholders to reflect the Private posture; the full data model comes in Phase 3.
+
+```powershell
+sf project deploy start `
+  --source-dir "force-app/main/default/objects/Event__c" `
+  --source-dir "force-app/main/default/objects/Attendee__c" `
+  --target-org EventEase
+```
+
+## 5) Open the Org
+```powershell
+sf org open --target-org EventEase
+```

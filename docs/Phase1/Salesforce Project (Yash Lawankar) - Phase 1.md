@@ -85,4 +85,4 @@ Status: Completed and ready for stakeholder sign-off.
 4) Experience Cloud portal in MVP or later?
 5) Event object OWD: Public Read-Only vs Public Read/Write?
 
-On approval, Phase 2 (configuration and build) can begin per `docs/phase1/mvp-scope.md`.
+

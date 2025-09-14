@@ -1,0 +1,78 @@
+{
+    "fileVersion": 0,
+    "serverMaxRevisionCounter": 14,
+    "sourceMembers": {
+        "Role__Admin": {
+            "memberType": "Role",
+            "serverRevisionCounter": 1,
+            "lastRetrievedFromServer": 1,
+            "isNameObsolete": false
+        },
+        "Role__EventEase_Admin": {
+            "memberType": "Role",
+            "serverRevisionCounter": 2,
+            "lastRetrievedFromServer": 2,
+            "isNameObsolete": false
+        },
+        "Role__EventEase_Event_Manager": {
+            "memberType": "Role",
+            "serverRevisionCounter": 13,
+            "lastRetrievedFromServer": 13,
+            "isNameObsolete": false
+        },
+        "Role__EventEase_Organizer": {
+            "memberType": "Role",
+            "serverRevisionCounter": 14,
+            "lastRetrievedFromServer": 14,
+            "isNameObsolete": false
+        },
+        "Role__Event_Manager": {
+            "memberType": "Role",
+            "serverRevisionCounter": 5,
+            "lastRetrievedFromServer": 5,
+            "isNameObsolete": false
+        },
+        "Role__Organizer": {
+            "memberType": "Role",
+            "serverRevisionCounter": 6,
+            "lastRetrievedFromServer": 6,
+            "isNameObsolete": false
+        },
+        "CustomObject__Album__c": {
+            "memberType": "CustomObject",
+            "serverRevisionCounter": 7,
+            "lastRetrievedFromServer": 7,
+            "isNameObsolete": false
+        },
+        "CustomObject__Attendee__c": {
+            "memberType": "CustomObject",
+            "serverRevisionCounter": 8,
+            "lastRetrievedFromServer": 8,
+            "isNameObsolete": false
+        },
+        "CustomObject__Event__c": {
+            "memberType": "CustomObject",
+            "serverRevisionCounter": 9,
+            "lastRetrievedFromServer": 9,
+            "isNameObsolete": false
+        },
+        "Profile__Admin": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 10,
+            "lastRetrievedFromServer": 10,
+            "isNameObsolete": false
+        },
+        "Profile__Organizer": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 11,
+            "lastRetrievedFromServer": 11,
+            "isNameObsolete": false
+        },
+        "PermissionSet__AI_Recommendations": {
+            "memberType": "PermissionSet",
+            "serverRevisionCounter": 12,
+            "lastRetrievedFromServer": 12,
+            "isNameObsolete": false
+        }
+    }
+}

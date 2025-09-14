@@ -3,13 +3,6 @@
   "edition": "Enterprise",
   "features": ["EnableSetPasswordInApi"],
   "settings": {
-    "companySettings": {
-      "defaultLanguage": "en",
-      "defaultLocale": "en_IN",
-      "defaultCurrencyIsoCode": "INR",
-      "defaultTimeZone": "Asia/Kolkata",
-      "fiscalYearStartMonth": 4
-    },
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true
     },
@@ -22,3 +15,4 @@
     }
   }
 }
+
