@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>AI Recommendations Access</label>
+    <description>Grants access needed for AI-driven event recommendations (to be expanded in Phase 3+).</description>
+    <hasActivationRequired>false</hasActivationRequired>
+</PermissionSet>

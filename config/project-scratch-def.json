@@ -1,10 +1,21 @@
 {
-  "orgName": "Demo company",
-  "edition": "Developer",
+  "orgName": "EventEase",
+  "edition": "Enterprise",
   "features": ["EnableSetPasswordInApi"],
   "settings": {
+    "companySettings": {
+      "defaultLanguage": "en",
+      "defaultLocale": "en_IN",
+      "defaultCurrencyIsoCode": "INR",
+      "defaultTimeZone": "Asia/Kolkata",
+      "fiscalYearStartMonth": 4
+    },
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true
+    },
+    "languageSettings": {
+      "enableEndUserLanguages": true,
+      "enablePlatformLanguages": true
     },
     "mobileSettings": {
       "enableS1EncryptedStoragePref2": false

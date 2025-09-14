@@ -10,3 +10,6 @@ package.xml
 
 # LWC Jest
 **/__tests__/**
+
+# Ignore stray placeholders (Phase 2 scaffolding)
+force-app/main/default/objects/Event__c/fields/BannerImageURL__c.field-meta.xml
