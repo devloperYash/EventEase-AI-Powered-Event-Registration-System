@@ -76,19 +76,3 @@ sfdx force:org:open
 - Mon–Fri: 09:00–18:00 (example) → Set as Default
 
 ---
-
-## Notes & Boundaries
-
-- No Phase 3+ work has been performed (no full custom objects/fields, flows, or automation yet).
-- Profiles are minimal; we will prefer Permission Sets for privileges as we implement features.
-- The ignored placeholder file avoids deployment issues without deleting local files.
-
----
-
-## Next (Phase 3 Preview)
-
-- Data Modeling & Relationships:
-  - Custom Objects: `Event__c`, `Attendee__c`, `Registration__c`, `Feedback__c`
-  - Relationships and record types for Virtual vs In-Person events
-- Begin validations and basic flows (prevent overbooking, confirmations trigger in later phase)
-- Report types and initial dashboards scaffolding
