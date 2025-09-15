@@ -4,7 +4,7 @@ This document presents Phase 1 (Problem Understanding & Industry Analysis) for t
 
 ---
 
-## Page 1 — Project Overview
+## Project Overview
 
 - Project Title: EventEase – AI-Powered Event Registration System
 - Industry: Event Management / Education / Corporate Training
@@ -20,14 +20,9 @@ This document presents Phase 1 (Problem Understanding & Industry Analysis) for t
   3) AI-Powered Recommendations: Suggest relevant events to attendees based on their interests and past participation.
   4) Reporting & Analytics: Dashboards for organizers to track attendance trends, popular events, and revenue.
 
-References:
-- Detailed Requirements: `docs/phase1/requirements.md`
-- Data Model: `docs/phase1/data-model.md`
-- Reporting & KPIs: `docs/phase1/reporting-analytics.md`
-
 ---
 
-## Page 2 — Phase 1: Problem Understanding & Industry Analysis
+## Phase 1: Problem Understanding & Industry Analysis
 
 - Requirement Gathering:
   - Sessions with Event Organizers and Admins to identify challenges in attendee registration, confirmations, reminders, and participation tracking.
