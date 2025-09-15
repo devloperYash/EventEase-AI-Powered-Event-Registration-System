@@ -1,5 +1,12 @@
 # EventEase – AI-Powered Event Registration System
 
+## Documentation
+
+**Phase 1 and Phase 2 detailed reports are available in the `docs` folder:**  
+
+- Phase 1 PDF: `docs/phase1/Phase 1.pdf`  
+- Phase 2 PDF: `docs/phase2/Phase 2.pdf` 
+
 ## Project Overview
 **Industry:** Event Management / Education / Corporate Training  
 **Project Type:** B2C Salesforce CRM Implementation  
