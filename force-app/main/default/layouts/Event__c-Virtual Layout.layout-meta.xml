@@ -11,15 +11,20 @@
         <field>Name</field>
       </layoutItems>
       <layoutItems><behavior>Edit</behavior><field>Event_Date__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Start_Date__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>End_Date__c</field></layoutItems>
       <layoutItems><behavior>Edit</behavior><field>Mode__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Description__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Event_Type__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Status__c</field></layoutItems>
       <layoutItems><behavior>Edit</behavior><field>Meeting_Link__c</field></layoutItems>
-      <layoutItems><behavior>Edit</behavior><field>Capacity__c</field></layoutItems>
     </layoutColumns>
     <layoutColumns>
-      <layoutItems><behavior>Edit</behavior><field>Venue__c</field></layoutItems>
-      <layoutItems><behavior>Edit</behavior><field>Venue_Address__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Capacity__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Registration_Fee__c</field></layoutItems>
+      <layoutItems><behavior>Edit</behavior><field>Organizer__c</field></layoutItems>
+      <layoutItems><behavior>Readonly</behavior><field>Attendee_Count__c</field></layoutItems>
     </layoutColumns>
     <style>TwoColumnsTopToBottom</style>
   </layoutSections>
 </Layout>
-

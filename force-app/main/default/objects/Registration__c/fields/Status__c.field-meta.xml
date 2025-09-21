@@ -9,6 +9,9 @@
       <value><fullName>Pending</fullName><default>true</default></value>
       <value><fullName>Confirmed</fullName><default>false</default></value>
       <value><fullName>Cancelled</fullName><default>false</default></value>
+      <value><fullName>Approved</fullName><default>false</default></value>
+      <value><fullName>Rejected</fullName><default>false</default></value>
     </valueSetDefinition>
   </valueSet>
+  <required>false</required>
 </CustomField>

@@ -2,9 +2,9 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
   <fullName>Attendee__c</fullName>
   <label>Attendee</label>
-  <type>Lookup</type>
+  <type>MasterDetail</type>
   <referenceTo>Attendee__c</referenceTo>
   <relationshipName>Attendee_Registrations</relationshipName>
-  <deleteConstraint>Restrict</deleteConstraint>
-  <required>true</required>
+  <reparentableMasterDetail>false</reparentableMasterDetail>
+  <writeRequiresMasterRead>false</writeRequiresMasterRead>
 </CustomField>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+  <fullName>Overbooking</fullName>
+  <active>true</active>
+  <errorConditionFormula>Attendee_Count__c &gt; Capacity__c</errorConditionFormula>
+  <errorMessage>Event capacity exceeded. No more registrations allowed.</errorMessage>
+  <errorDisplayField>Capacity__c</errorDisplayField>
+</ValidationRule>

@@ -10,6 +10,15 @@
     <layout>Event__c-In_Person Layout</layout>
     <recordType>Event__c.In_Person</recordType>
   </layoutAssignments>
+  <layoutAssignments>
+    <layout>Attendee__c-Attendee Layout</layout>
+  </layoutAssignments>
+  <layoutAssignments>
+    <layout>Registration__c-Registration Layout</layout>
+  </layoutAssignments>
+  <layoutAssignments>
+    <layout>Feedback__c-Feedback Layout</layout>
+  </layoutAssignments>
   <recordTypeVisibilities>
     <default>false</default>
     <recordType>Event__c.Virtual</recordType>

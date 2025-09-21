@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+  <label>EventEase</label>
+  <description>EventEase app for managing Events, Attendees, Registrations, and Feedback</description>
+  <defaultLandingTab>standard-Home</defaultLandingTab>
+  <formFactors>Large</formFactors>
+  <navType>Standard</navType>
+  <uiType>Lightning</uiType>
+  <tabs>standard-Home</tabs>
+  <tabs>Event__c</tabs>
+  <tabs>Attendee__c</tabs>
+  <tabs>Registration__c</tabs>
+  <tabs>Feedback__c</tabs>
+  <tabs>standard-Report</tabs>
+  <tabs>standard-Dashboard</tabs>
+</CustomApplication>

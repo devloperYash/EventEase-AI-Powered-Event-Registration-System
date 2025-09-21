@@ -10,4 +10,54 @@
       <default>true</default>
     </values>
   </picklistValues>
+  <picklistValues>
+    <picklist>Event_Type__c</picklist>
+    <values>
+      <fullName>Conference</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Workshop</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Seminar</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Training</fullName>
+      <default>false</default>
+    </values>
+  </picklistValues>
+  <picklistValues>
+    <picklist>Status__c</picklist>
+    <values>
+      <fullName>Draft</fullName>
+      <default>true</default>
+    </values>
+    <values>
+      <fullName>Published</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Registration Open</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Registration Closed</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Active</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Completed</fullName>
+      <default>false</default>
+    </values>
+    <values>
+      <fullName>Cancelled</fullName>
+      <default>false</default>
+    </values>
+  </picklistValues>
 </RecordType>

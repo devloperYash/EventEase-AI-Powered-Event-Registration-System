@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+  <fullName>Past_Event_Registration_Block</fullName>
+  <active>true</active>
+  <errorConditionFormula>AND(
+    ISNEW(),
+    NOT(ISBLANK(Event__c)),
+    OR(ISPICKVAL(Status__c, "Confirmed"), ISPICKVAL(Status__c, "Approved")),
+    OR(
+      Event__r.Start_Date__c &lt; TODAY(),
+      Event__r.Event_Date__c &lt; NOW()
+    )
+  )</errorConditionFormula>
+  <errorMessage>You cannot register for past events.</errorMessage>
+  <errorDisplayField>Event__c</errorDisplayField>
+</ValidationRule>

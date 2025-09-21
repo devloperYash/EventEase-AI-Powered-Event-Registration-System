@@ -4,4 +4,5 @@
   <label>Registration Date</label>
   <type>DateTime</type>
   <defaultValue>NOW()</defaultValue>
+  <required>false</required>
 </CustomField>
