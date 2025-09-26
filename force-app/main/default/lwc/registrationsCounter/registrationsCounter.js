@@ -117,10 +117,10 @@ export default class RegistrationsCounter extends LightningElement {
 
     connectedCallback() {
         this.updateLastUpdated();
-        // Auto-refresh every 30 seconds
+        // Auto-refresh every 5 minutes
         this.refreshInterval = setInterval(() => {
             this.handleRefresh();
-        }, 30000);
+        }, 300000);
     }
 
     disconnectedCallback() {
