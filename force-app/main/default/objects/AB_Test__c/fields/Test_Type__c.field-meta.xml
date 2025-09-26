@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Test_Type__c</fullName>
+    <description>Type of A/B test being conducted</description>
+    <externalId>false</externalId>
+    <label>Test Type</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Registration Form</fullName>
+                <default>false</default>
+                <label>Registration Form</label>
+            </value>
+            <value>
+                <fullName>Event Page Layout</fullName>
+                <default>false</default>
+                <label>Event Page Layout</label>
+            </value>
+            <value>
+                <fullName>Email Template</fullName>
+                <default>false</default>
+                <label>Email Template</label>
+            </value>
+            <value>
+                <fullName>Call to Action</fullName>
+                <default>false</default>
+                <label>Call to Action</label>
+            </value>
+            <value>
+                <fullName>UI Component</fullName>
+                <default>false</default>
+                <label>UI Component</label>
+            </value>
+            <value>
+                <fullName>Web-to-Lead Form</fullName>
+                <default>false</default>
+                <label>Web-to-Lead Form</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

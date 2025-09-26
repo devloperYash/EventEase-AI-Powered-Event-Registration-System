@@ -1,0 +1,224 @@
+<template>
+    <lightning-card title="💰 Revenue Trend Analysis" icon-name="standard:currency">
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading revenue data..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template if:false={isLoading}>
+                <!-- Revenue Summary Cards -->
+                <div class="revenue-summary slds-m-bottom_medium">
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="summary-card total-revenue">
+                                <div class="summary-icon">💰</div>
+                                <div class="summary-content">
+                                    <div class="summary-value">${totalRevenue}</div>
+                                    <div class="summary-label">Total Revenue</div>
+                                    <div class="summary-change" data-trend={totalRevenueTrend}>
+                                        {totalRevenueChange}% vs last period
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="summary-card avg-revenue">
+                                <div class="summary-icon">📊</div>
+                                <div class="summary-content">
+                                    <div class="summary-value">${averageRevenue}</div>
+                                    <div class="summary-label">Avg per Event</div>
+                                    <div class="summary-change" data-trend={avgRevenueTrend}>
+                                        {avgRevenueChange}% vs last period
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="summary-card paid-registrations">
+                                <div class="summary-icon">✅</div>
+                                <div class="summary-content">
+                                    <div class="summary-value">{paidRegistrations}</div>
+                                    <div class="summary-label">Paid Registrations</div>
+                                    <div class="summary-change" data-trend={paidRegTrend}>
+                                        {paidRegChange}% vs last period
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="summary-card conversion-rate">
+                                <div class="summary-icon">🎯</div>
+                                <div class="summary-content">
+                                    <div class="summary-value">{conversionRate}%</div>
+                                    <div class="summary-label">Payment Rate</div>
+                                    <div class="summary-change" data-trend={conversionTrend}>
+                                        {conversionChange}% vs last period
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Controls -->
+                <div class="chart-controls slds-m-bottom_medium">
+                    <div class="slds-grid slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-combobox
+                                name="timeRange"
+                                label="Time Range"
+                                value={selectedTimeRange}
+                                options={timeRangeOptions}
+                                onchange={handleTimeRangeChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-combobox
+                                name="groupBy"
+                                label="Group By"
+                                value={selectedGroupBy}
+                                options={groupByOptions}
+                                onchange={handleGroupByChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-combobox
+                                name="eventType"
+                                label="Event Type"
+                                value={selectedEventType}
+                                options={eventTypeOptions}
+                                onchange={handleEventTypeChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-combobox
+                                name="chartType"
+                                label="Chart Type"
+                                value={selectedChartType}
+                                options={chartTypeOptions}
+                                onchange={handleChartTypeChange}>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Trend Chart -->
+                <template if:true={hasChartData}>
+                    <div class="chart-container slds-m-bottom_medium">
+                        <canvas lwc:ref="revenueChart" class="revenue-chart"></canvas>
+                    </div>
+                </template>
+
+                <!-- Top Revenue Events -->
+                <template if:true={hasTopRevenueEvents}>
+                    <div class="top-revenue-events">
+                        <h3 class="section-title slds-m-bottom_small">🏆 Top Revenue Generating Events</h3>
+                        <div class="events-grid slds-grid slds-wrap slds-gutters_small">
+                            <template for:each={topRevenueEvents} for:item="event">
+                                <div key={event.eventId} class="slds-col slds-size_1-of-3">
+                                    <div class="revenue-event-card">
+                                        <div class="event-header">
+                                            <h4 class="event-name">{event.eventName}</h4>
+                                            <div class="revenue-amount">${event.totalRevenue}</div>
+                                        </div>
+                                        <div class="event-details">
+                                            <p class="event-info">
+                                                {event.eventType} • {event.eventDate}
+                                            </p>
+                                            <div class="revenue-breakdown">
+                                                <div class="breakdown-item">
+                                                    <span class="breakdown-label">Registrations:</span>
+                                                    <span class="breakdown-value">{event.paidRegistrations}</span>
+                                                </div>
+                                                <div class="breakdown-item">
+                                                    <span class="breakdown-label">Avg per ticket:</span>
+                                                    <span class="breakdown-value">${event.averageTicketPrice}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="event-actions">
+                                            <lightning-button
+                                                label="View Details"
+                                                variant="neutral"
+                                                size="small"
+                                                onclick={handleViewEvent}
+                                                data-event-id={event.eventId}>
+                                            </lightning-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Revenue Insights -->
+                <template if:true={hasInsights}>
+                    <div class="revenue-insights slds-m-top_medium">
+                        <h3 class="section-title slds-m-bottom_small">💡 Revenue Insights</h3>
+                        <div class="insights-container">
+                            <template for:each={revenueInsights} for:item="insight">
+                                <div key={insight.id} class="insight-card" data-type={insight.type}>
+                                    <div class="insight-icon">
+                                        <lightning-icon icon-name={insight.icon} size="small" variant={insight.variant}></lightning-icon>
+                                    </div>
+                                    <div class="insight-content">
+                                        <h4 class="insight-title">{insight.title}</h4>
+                                        <p class="insight-description">{insight.description}</p>
+                                        <template if:true={insight.recommendation}>
+                                            <p class="insight-recommendation">💡 {insight.recommendation}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- No Data State -->
+                <template if:false={hasData}>
+                    <div class="no-data-state slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:info" size="large" variant="inverse"></lightning-icon>
+                        <h3 class="slds-m-top_small">No Revenue Data Available</h3>
+                        <p class="slds-m-top_small">No paid registrations found for the selected criteria</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Card Footer -->
+        <div slot="footer" class="slds-card__footer">
+            <div class="slds-grid slds-grid_align-spread">
+                <div class="slds-col">
+                    <p class="last-updated">Last updated: {lastUpdated}</p>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <lightning-button-group>
+                        <lightning-button
+                            label="Refresh"
+                            icon-name="utility:refresh"
+                            onclick={handleRefresh}
+                            variant="neutral">
+                        </lightning-button>
+                        <lightning-button
+                            label="Export Report"
+                            icon-name="utility:download"
+                            onclick={handleExport}
+                            variant="neutral">
+                        </lightning-button>
+                        <lightning-button
+                            label="Forecast"
+                            icon-name="utility:trending"
+                            onclick={handleForecast}
+                            variant="brand">
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

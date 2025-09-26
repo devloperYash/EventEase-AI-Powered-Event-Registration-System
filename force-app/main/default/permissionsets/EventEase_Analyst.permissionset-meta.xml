@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+  <label>EventEase Analyst</label>
+  <description>Analyst permissions for EventEase: read-only access and analytics capabilities.</description>
+  <hasActivationRequired>false</hasActivationRequired>
+
+  <!-- Object permissions: read-only on all core objects -->
+  <objectPermissions>
+    <allowCreate>false</allowCreate>
+    <allowDelete>false</allowDelete>
+    <allowEdit>false</allowEdit>
+    <allowRead>true</allowRead>
+    <modifyAllRecords>false</modifyAllRecords>
+    <object>Event__c</object>
+    <viewAllRecords>true</viewAllRecords>
+  </objectPermissions>
+  <objectPermissions>
+    <allowCreate>false</allowCreate>
+    <allowDelete>false</allowDelete>
+    <allowEdit>false</allowEdit>
+    <allowRead>true</allowRead>
+    <modifyAllRecords>false</modifyAllRecords>
+    <object>Attendee__c</object>
+    <viewAllRecords>true</viewAllRecords>
+  </objectPermissions>
+  <objectPermissions>
+    <allowCreate>false</allowCreate>
+    <allowDelete>false</allowDelete>
+    <allowEdit>false</allowEdit>
+    <allowRead>true</allowRead>
+    <modifyAllRecords>false</modifyAllRecords>
+    <object>Registration__c</object>
+    <viewAllRecords>true</viewAllRecords>
+  </objectPermissions>
+  <objectPermissions>
+    <allowCreate>false</allowCreate>
+    <allowDelete>false</allowDelete>
+    <allowEdit>false</allowEdit>
+    <allowRead>true</allowRead>
+    <modifyAllRecords>false</modifyAllRecords>
+    <object>Feedback__c</object>
+    <viewAllRecords>true</viewAllRecords>
+  </objectPermissions>
+
+  <!-- Field-level security: read-only for sensitive fields -->
+  <fieldPermissions>
+    <editable>false</editable>
+    <field>Registration__c.Payment_Status__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+  <fieldPermissions>
+    <editable>false</editable>
+    <field>Event__c.Meeting_Link__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+  <fieldPermissions>
+    <editable>false</editable>
+    <field>Event__c.Venue__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+
+  <!-- User permissions for analytics -->
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>RunReports</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>ViewPublicReports</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>ViewPublicDashboards</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>SubscribeToLightningReports</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>SubscribeToLightningDashboards</name>
+  </userPermissions>
+
+  <!-- Apex Class Access for LWCs -->
+  <classAccesses>
+    <apexClass>LowAttendanceController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>RegistrationsCounterController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+</PermissionSet>

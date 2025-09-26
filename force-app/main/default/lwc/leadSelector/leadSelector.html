@@ -1,0 +1,155 @@
+<template>
+    <lightning-card title="🎯 Select Leads for Event Marketing" icon-name="standard:lead">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            
+            <!-- Event Information -->
+            <div class="slds-box slds-theme_default slds-m-bottom_medium">
+                <h3 class="slds-text-heading_small slds-m-bottom_small">📧 Event Email Campaign</h3>
+                <p><strong>Event:</strong> {eventName}</p>
+                <p><strong>Type:</strong> {eventType}</p>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-input
+                        type="search"
+                        label="Search Leads"
+                        placeholder="Search by name or email..."
+                        value={searchTerm}
+                        onchange={handleSearch}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-combobox
+                        name="eventInterest"
+                        label="Event Interest"
+                        value={selectedInterest}
+                        placeholder="All Interests"
+                        options={interestOptions}
+                        onchange={handleInterestFilter}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-combobox
+                        name="leadStatus"
+                        label="Lead Status"
+                        value={selectedStatus}
+                        placeholder="All Statuses"
+                        options={statusOptions}
+                        onchange={handleStatusFilter}>
+                    </lightning-combobox>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-button
+                        label="🔍 Search Leads"
+                        onclick={searchLeads}
+                        variant="neutral"
+                        disabled={isLoading}>
+                    </lightning-button>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-button
+                        label="✅ Select All"
+                        onclick={selectAllLeads}
+                        variant="neutral"
+                        disabled={isLoading}>
+                    </lightning-button>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-button
+                        label="❌ Clear All"
+                        onclick={clearAllLeads}
+                        variant="neutral"
+                        disabled={isLoading}>
+                    </lightning-button>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-button
+                        label="📧 Send Emails"
+                        onclick={sendEmails}
+                        variant="brand"
+                        disabled={sendDisabled}>
+                    </lightning-button>
+                </div>
+            </div>
+
+            <!-- Selected Count -->
+            <template if:true={selectedLeads.length}>
+                <div class="slds-box slds-theme_success slds-m-bottom_medium">
+                    <p><strong>✅ Selected: {selectedLeads.length} leads</strong></p>
+                    <p>Ready to send event invitations to selected leads.</p>
+                </div>
+            </template>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading leads..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Leads Data Table -->
+            <template if:true={leads.length}>
+                <div class="slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        👥 Available Leads ({leads.length} found)
+                    </h3>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={leads}
+                        columns={columns}
+                        selected-rows={selectedLeadIds}
+                        onrowselection={handleRowSelection}
+                        max-row-selection="100"
+                        hide-checkbox-column={hideCheckbox}>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <!-- No Results Message -->
+            <template if:false={leads.length}>
+                <template if:false={isLoading}>
+                    <div class="slds-text-align_center slds-p-around_medium">
+                        <lightning-icon icon-name="standard:lead" size="large" class="slds-m-bottom_small"></lightning-icon>
+                        <p class="slds-text-heading_small">No leads found</p>
+                        <p>Try adjusting your search criteria or create new leads.</p>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Email Preview -->
+            <template if:true={showPreview}>
+                <div class="slds-box slds-theme_info slds-m-top_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">📧 Email Preview</h3>
+                    <p><strong>Subject:</strong> Invitation: {eventName} - Register Now!</p>
+                    <p><strong>Recipients:</strong> {selectedLeads.length} selected leads</p>
+                    <div class="slds-m-top_small">
+                        <p><strong>Email will include:</strong></p>
+                        <ul class="slds-list_dotted slds-m-left_large">
+                            <li>Personalized greeting</li>
+                            <li>Event details and timing</li>
+                            <li>Registration instructions</li>
+                            <li>Professional EventEase branding</li>
+                        </ul>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Success/Error Messages -->
+            <template if:true={showMessage}>
+                <div class={messageClass}>
+                    <div class="slds-notify__content">
+                        <h2 class="slds-text-heading_small">{messageTitle}</h2>
+                        <lightning-formatted-text value={messageText}></lightning-formatted-text>
+                    </div>
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

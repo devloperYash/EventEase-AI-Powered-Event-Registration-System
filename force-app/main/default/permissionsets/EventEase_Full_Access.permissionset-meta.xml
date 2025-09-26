@@ -78,4 +78,37 @@
     <field>Event__c.Meeting_Link__c</field>
     <readable>true</readable>
   </fieldPermissions>
+  <fieldPermissions>
+    <editable>true</editable>
+    <field>Registration__c.Payment_Status__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>RunReports</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>ViewPublicReports</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>ViewPublicDashboards</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>SubscribeToLightningReports</name>
+  </userPermissions>
+  <userPermissions>
+    <enabled>true</enabled>
+    <name>SubscribeToLightningDashboards</name>
+  </userPermissions>
+  <classAccesses>
+    <apexClass>LowAttendanceController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <classAccesses>
+    <apexClass>RegistrationsCounterController</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
 </PermissionSet>

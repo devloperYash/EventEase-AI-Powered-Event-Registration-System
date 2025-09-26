@@ -1,0 +1,106 @@
+<template>
+    <lightning-card title="📊 Live Registrations Counter" icon-name="standard:event">
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading registrations..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template if:false={isLoading}>
+                <!-- Summary Stats -->
+                <div class="slds-grid slds-wrap slds-gutters_small slds-m-bottom_medium">
+                    <div class="slds-col slds-size_1-of-3">
+                        <div class="stat-card total-registrations">
+                            <div class="stat-number">{totalRegistrations}</div>
+                            <div class="stat-label">Total Registrations</div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <div class="stat-card confirmed-registrations">
+                            <div class="stat-number">{confirmedRegistrations}</div>
+                            <div class="stat-label">Confirmed</div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <div class="stat-card pending-registrations">
+                            <div class="stat-number">{pendingRegistrations}</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Filter -->
+                <div class="slds-m-bottom_medium">
+                    <lightning-combobox
+                        name="eventFilter"
+                        label="Filter by Event"
+                        value={selectedEventId}
+                        placeholder="All Events"
+                        options={eventOptions}
+                        onchange={handleEventChange}>
+                    </lightning-combobox>
+                </div>
+
+                <!-- Event-specific Counters -->
+                <template if:true={eventCounters}>
+                    <div class="slds-scrollable_y" style="height: 300px;">
+                        <template for:each={eventCounters} for:item="event">
+                            <div key={event.eventId} class="event-counter-card slds-m-bottom_small">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <div class="slds-col slds-size_2-of-3">
+                                        <h3 class="event-name">{event.eventName}</h3>
+                                        <p class="event-details">
+                                            {event.eventType} • {event.eventDate}
+                                        </p>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3 slds-text-align_right">
+                                        <div class="capacity-info">
+                                            <div class="registration-count">
+                                                {event.registrationCount}/{event.capacity}
+                                            </div>
+                                            <div class="capacity-percentage" data-percentage={event.capacityPercentage}>
+                                                {event.capacityPercentage}% Full
+                                            </div>
+                                        </div>
+                                        <!-- Capacity Progress Bar -->
+                                        <div class="capacity-bar">
+                                            <div class="capacity-fill" style={event.capacityBarStyle}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- No Data State -->
+                <template if:false={hasData}>
+                    <div class="slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:info" size="large" variant="inverse"></lightning-icon>
+                        <p class="slds-m-top_small">No registration data available</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Card Footer with Refresh -->
+        <div slot="footer" class="slds-card__footer">
+            <div class="slds-grid slds-grid_align-spread">
+                <div class="slds-col">
+                    <p class="last-updated">Last updated: {lastUpdated}</p>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <lightning-button
+                        label="Refresh"
+                        icon-name="utility:refresh"
+                        onclick={handleRefresh}
+                        variant="neutral">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Variant_Assigned__c</fullName>
+    <description>The variant assigned to this user</description>
+    <externalId>false</externalId>
+    <label>Variant Assigned</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Control</fullName>
+                <default>true</default>
+                <label>Control</label>
+            </value>
+            <value>
+                <fullName>Variant A</fullName>
+                <default>false</default>
+                <label>Variant A</label>
+            </value>
+            <value>
+                <fullName>Variant B</fullName>
+                <default>false</default>
+                <label>Variant B</label>
+            </value>
+            <value>
+                <fullName>Variant C</fullName>
+                <default>false</default>
+                <label>Variant C</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

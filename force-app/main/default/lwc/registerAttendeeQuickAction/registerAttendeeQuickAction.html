@@ -1,0 +1,53 @@
+<template>
+    <lightning-card title="Register Attendee" icon-name="standard:event">
+        <div slot="actions">
+            <lightning-badge label={capacityInfo} variant="inverse"></lightning-badge>
+        </div>
+        
+        <div class="slds-p-around_medium">
+            <!-- Event Information -->
+            <div class="slds-form-element slds-m-bottom_medium">
+                <label class="slds-form-element__label slds-text-heading_small">Event:</label>
+                <div class="slds-form-element__control">
+                    <span class="slds-text-body_regular">{eventName}</span>
+                </div>
+            </div>
+
+            <!-- Attendee Selection -->
+            <div class="slds-form-element slds-m-bottom_medium">
+                <lightning-combobox
+                    name="attendee"
+                    label="Select Attendee"
+                    value={selectedAttendeeId}
+                    placeholder="Choose an attendee..."
+                    options={attendeeOptions}
+                    onchange={handleAttendeeChange}
+                    required>
+                </lightning-combobox>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                    <lightning-spinner alternative-text="Registering attendee..." size="small"></lightning-spinner>
+                </div>
+            </template>
+        </div>
+
+        <!-- Action Buttons -->
+        <div slot="footer">
+            <div class="slds-grid slds-grid_align-end slds-p-around_medium">
+                <lightning-button
+                    label="Cancel"
+                    onclick={handleCancel}>
+                </lightning-button>
+                <lightning-button
+                    label="Register"
+                    variant="brand"
+                    onclick={handleRegister}
+                    disabled={isLoading}>
+                </lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

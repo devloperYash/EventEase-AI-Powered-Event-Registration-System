@@ -1,0 +1,171 @@
+<template>
+    <lightning-card title="⚠️ Low Attendance Alerts" icon-name="standard:warning">
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading alerts..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template if:false={isLoading}>
+                <!-- Alert Summary -->
+                <div class="alert-summary slds-m-bottom_medium">
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-3">
+                            <div class="summary-card critical">
+                                <div class="summary-number">{criticalAlerts}</div>
+                                <div class="summary-label">Critical (&lt;30%)</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <div class="summary-card warning">
+                                <div class="summary-number">{warningAlerts}</div>
+                                <div class="summary-label">Warning (&lt;50%)</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <div class="summary-card info">
+                                <div class="summary-number">{lowAlerts}</div>
+                                <div class="summary-label">Low (&lt;70%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threshold Settings -->
+                <div class="threshold-settings slds-m-bottom_medium">
+                    <div class="slds-grid slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input
+                                type="number"
+                                label="Critical Threshold (%)"
+                                value={criticalThreshold}
+                                min="1"
+                                max="100"
+                                onchange={handleThresholdChange}
+                                data-threshold="critical">
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input
+                                type="number"
+                                label="Warning Threshold (%)"
+                                value={warningThreshold}
+                                min="1"
+                                max="100"
+                                onchange={handleThresholdChange}
+                                data-threshold="warning">
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input
+                                type="number"
+                                label="Low Threshold (%)"
+                                value={lowThreshold}
+                                min="1"
+                                max="100"
+                                onchange={handleThresholdChange}
+                                data-threshold="low">
+                            </lightning-input>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert List -->
+                <template if:true={hasAlerts}>
+                    <div class="alerts-container">
+                        <template for:each={alertEvents} for:item="alert">
+                            <div key={alert.eventId} class={alert.alertClass}>
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <div class="slds-col slds-size_2-of-3">
+                                        <div class="alert-header">
+                                            <lightning-icon 
+                                                icon-name={alert.iconName} 
+                                                size="small" 
+                                                variant={alert.iconVariant}
+                                                class="alert-icon">
+                                            </lightning-icon>
+                                            <h3 class="alert-title">{alert.eventName}</h3>
+                                        </div>
+                                        <div class="alert-details">
+                                            <p class="event-info">
+                                                {alert.eventType} • {alert.eventDate}
+                                            </p>
+                                            <p class="alert-message">{alert.message}</p>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3 slds-text-align_right">
+                                        <div class="capacity-stats">
+                                            <div class="capacity-numbers">
+                                                {alert.registrationCount}/{alert.capacity}
+                                            </div>
+                                            <div class="capacity-percentage" data-level={alert.alertLevel}>
+                                                {alert.capacityPercentage}% Full
+                                            </div>
+                                            <div class="days-until">
+                                                {alert.daysUntilEvent} days until event
+                                            </div>
+                                        </div>
+                                        <!-- Action Buttons -->
+                                        <div class="alert-actions slds-m-top_small">
+                                            <lightning-button-group>
+                                                <lightning-button
+                                                    label="View Event"
+                                                    variant="neutral"
+                                                    onclick={handleViewEvent}
+                                                    data-event-id={alert.eventId}>
+                                                </lightning-button>
+                                                <lightning-button
+                                                    label="Send Reminder"
+                                                    variant="brand"
+                                                    onclick={handleSendReminder}
+                                                    data-event-id={alert.eventId}>
+                                                </lightning-button>
+                                            </lightning-button-group>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- No Alerts State -->
+                <template if:false={hasAlerts}>
+                    <div class="no-alerts-state slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:success" size="large" variant="success"></lightning-icon>
+                        <h3 class="slds-m-top_small">All Events Looking Good!</h3>
+                        <p class="slds-m-top_small">No events below the attendance threshold</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Card Footer -->
+        <div slot="footer" class="slds-card__footer">
+            <div class="slds-grid slds-grid_align-spread">
+                <div class="slds-col">
+                    <p class="last-updated">Last checked: {lastUpdated}</p>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <lightning-button-group>
+                        <lightning-button
+                            label="Refresh"
+                            icon-name="utility:refresh"
+                            onclick={handleRefresh}
+                            variant="neutral">
+                        </lightning-button>
+                        <lightning-button
+                            label="Export Alerts"
+                            icon-name="utility:download"
+                            onclick={handleExport}
+                            variant="neutral">
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

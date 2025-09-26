@@ -37,9 +37,9 @@ public with sharing class RegistrationTriggerHandler {
             confirmedCounts.put(eId, c);
         }
 
-        // Event capacities and dates
+        // Event capacities, dates and status
         Map<Id, Event__c> eventMap = new Map<Id, Event__c>([
-            SELECT Id, Capacity__c, Start_Date__c, Event_Date__c
+            SELECT Id, Capacity__c, Start_Date__c, Event_Date__c, Status__c
             FROM Event__c
             WHERE Id IN :eventIds
         ]);
@@ -52,6 +52,18 @@ public with sharing class RegistrationTriggerHandler {
 
         for (Registration__c r : newList) {
             if (r.Event__c == null) continue;
+
+            // Block new registrations when event registrations are closed/completed/cancelled
+            if (oldMap == null || !oldMap.containsKey(r.Id)) {
+                Event__c evStatusCheck = eventMap.get(r.Event__c);
+                if (evStatusCheck != null &&
+                    (evStatusCheck.Status__c == 'Registration Closed' ||
+                     evStatusCheck.Status__c == 'Completed' ||
+                     evStatusCheck.Status__c == 'Cancelled')) {
+                    r.addError('Registrations are closed for this event.');
+                    continue;
+                }
+            }
 
             // Determine old state
             Boolean wasCountedInOldEvent = false;
@@ -74,6 +86,18 @@ public with sharing class RegistrationTriggerHandler {
             
             // Determine if this will increase count for the target event
             Boolean willIncreaseCount = newIsCounted && !wasCountedInNewEvent;
+
+            // If event is closed/completed/cancelled, block any update that would increase counted registrations
+            if (willIncreaseCount) {
+                Event__c evStatusCheck2 = eventMap.get(r.Event__c);
+                if (evStatusCheck2 != null &&
+                    (evStatusCheck2.Status__c == 'Registration Closed' ||
+                     evStatusCheck2.Status__c == 'Completed' ||
+                     evStatusCheck2.Status__c == 'Cancelled')) {
+                    r.addError('Registrations are closed for this event.');
+                    continue;
+                }
+            }
             
             // Past event validation - only for new counting statuses or event changes
             Boolean mustValidateEventDate = (oldMap == null) || isEventChanging || 
@@ -219,12 +243,22 @@ public with sharing class RegistrationTriggerHandler {
                               (e.End_Date__c != null ? '- End Date: ' + e.End_Date__c.format() + '\n' : '') +
                               (e.Mode__c != null ? '- Mode: ' + e.Mode__c + '\n' : '');
 
-                // Add mode-specific details
+                // Add mode-specific details with security check
                 if (e.Mode__c == 'Virtual') {
-                    body += (e.Meeting_Link__c != null ? '- Join Link: ' + e.Meeting_Link__c + '\n' : '');
+                    // Only show meeting link if confirmed and paid
+                    if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid' && e.Meeting_Link__c != null) {
+                        body += '- Join Link: ' + e.Meeting_Link__c + '\n';
+                    } else {
+                        body += '- Join Link: Will be shared after confirmation and payment completion\n';
+                    }
                 } else {
-                    body += (e.Venue__c != null ? '- Venue: ' + e.Venue__c + '\n' : '');
-                    body += (e.Venue_Address__c != null ? '- Address: ' + e.Venue_Address__c + '\n' : '');
+                    // Only show venue details if confirmed and paid
+                    if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid') {
+                        body += (e.Venue__c != null ? '- Venue: ' + e.Venue__c + '\n' : '');
+                        body += (e.Venue_Address__c != null ? '- Address: ' + e.Venue_Address__c + '\n' : '');
+                    } else {
+                        body += '- Venue details will be shared after confirmation and payment completion\n';
+                    }
                 }
 
                 body += (e.Owner != null && e.Owner.Name != null ? '\nOrganizer: ' + e.Owner.Name + '\n' : '');
@@ -251,8 +285,14 @@ public with sharing class RegistrationTriggerHandler {
                   +   (e.End_Date__c != null ? '<tr><td><b>End Date</b></td><td>' + e.End_Date__c.format() + '</td></tr>' : '')
                   +   (e.Mode__c != null ? '<tr><td><b>Mode</b></td><td>' + e.Mode__c + '</td></tr>' : '')
                   + '</table>'
-                  + (e.Mode__c == 'Virtual' && e.Meeting_Link__c != null ? '<p><b>Join Link:</b> <a href="' + e.Meeting_Link__c + '">Join Meeting</a></p>' : '')
-                  + (e.Mode__c != 'Virtual' ? ((e.Venue__c != null ? '<p><b>Venue:</b> ' + e.Venue__c + '</p>' : '') + (e.Venue_Address__c != null ? '<p><b>Address:</b> ' + e.Venue_Address__c + '</p>' : '')) : '')
+                  + (e.Mode__c == 'Virtual' ? 
+                      (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid' && e.Meeting_Link__c != null ? 
+                        '<p><b>Join Link:</b> <a href="' + e.Meeting_Link__c + '" style="color:#2E5AAC">Join Meeting</a></p>' : 
+                        '<p><b>Join Link:</b> Will be shared after confirmation and payment completion</p>') : '')
+                  + (e.Mode__c != 'Virtual' ? 
+                      (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid' ? 
+                        ((e.Venue__c != null ? '<p><b>Venue:</b> ' + e.Venue__c + '</p>' : '') + (e.Venue_Address__c != null ? '<p><b>Address:</b> ' + e.Venue_Address__c + '</p>' : '')) : 
+                        '<p><b>Venue details:</b> Will be shared after confirmation and payment completion</p>') : '')
                   + (e.Owner != null && e.Owner.Name != null ? '<p><b>Organizer:</b> ' + e.Owner.Name + '</p>' : '')
                   + '<p>Thanks,<br/>EventEase Team</p>'
                   + '</body></html>';
@@ -282,8 +322,12 @@ public with sharing class RegistrationTriggerHandler {
         for (Registration__c r : newList) {
             Registration__c oldR = oldMap.get(r.Id);
             if (oldR == null) continue;
-            // Notify only when moving into Confirmed
-            if (r.Status__c == 'Confirmed' && oldR.Status__c != 'Confirmed') {
+            
+            // Send email on ANY status or payment change
+            Boolean statusChanged = (r.Status__c != oldR.Status__c);
+            Boolean paymentChanged = (r.Payment_Status__c != oldR.Payment_Status__c);
+            
+            if (statusChanged || paymentChanged) {
                 toNotify.add(r);
             }
         }
@@ -316,9 +360,30 @@ public with sharing class RegistrationTriggerHandler {
 
             Messaging.SingleEmailMessage msg = new Messaging.SingleEmailMessage();
             msg.setToAddresses(new String[] { a.Email__c });
-            msg.setSubject('Registration Confirmed - ' + e.Name);
+            
+            // Dynamic subject based on status
+            String emailSubject = 'Registration Update - ' + e.Name;
+            if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid') {
+                emailSubject = 'Registration Confirmed - ' + e.Name;
+            } else if (r.Status__c == 'Confirmed') {
+                emailSubject = 'Registration Confirmed (Payment Pending) - ' + e.Name;
+            } else if (r.Status__c == 'Cancelled') {
+                emailSubject = 'Registration Cancelled - ' + e.Name;
+            }
+            msg.setSubject(emailSubject);
+            
+            // Dynamic body content based on status
+            String bodyIntro = 'Your registration has been updated.';
+            if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid') {
+                bodyIntro = 'Your registration is confirmed and payment is complete.';
+            } else if (r.Status__c == 'Confirmed') {
+                bodyIntro = 'Your registration is confirmed. Please complete payment to receive full event details.';
+            } else if (r.Status__c == 'Cancelled') {
+                bodyIntro = 'Your registration has been cancelled.';
+            }
+            
             String body = 'Hello ' + a.Name + ',\n\n' +
-                          'Your registration is confirmed. Here are the details:\n\n' +
+                          bodyIntro + ' Here are the details:\n\n' +
                           'Registration Details:\n' +
                           (r.Name != null ? '- Registration No: ' + r.Name + '\n' : '') +
                           (r.Status__c != null ? '- Status: ' + r.Status__c + '\n' : '') +
@@ -333,20 +398,46 @@ public with sharing class RegistrationTriggerHandler {
                           (e.Mode__c != null ? '- Mode: ' + e.Mode__c + '\n' : '');
 
             if (e.Mode__c == 'Virtual') {
-                body += (e.Meeting_Link__c != null ? '- Join Link: ' + e.Meeting_Link__c + '\n' : '');
+                // Only show meeting link if confirmed and paid
+                if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid' && e.Meeting_Link__c != null) {
+                    body += '- Join Link: ' + e.Meeting_Link__c + '\n';
+                } else {
+                    body += '- Join Link: Will be shared after confirmation and payment completion\n';
+                }
             } else {
-                body += (e.Venue__c != null ? '- Venue: ' + e.Venue__c + '\n' : '');
-                body += (e.Venue_Address__c != null ? '- Address: ' + e.Venue_Address__c + '\n' : '');
+                // Only show venue details if confirmed and paid
+                if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid') {
+                    body += (e.Venue__c != null ? '- Venue: ' + e.Venue__c + '\n' : '');
+                    body += (e.Venue_Address__c != null ? '- Address: ' + e.Venue_Address__c + '\n' : '');
+                } else {
+                    body += '- Venue details will be shared after confirmation and payment completion\n';
+                }
             }
 
             body += (e.Owner != null && e.Owner.Name != null ? '\nOrganizer: ' + e.Owner.Name + '\n' : '');
-            body += '\nWe look forward to seeing you!\n\nThanks,\nEventEase Team';
+            
+            // Dynamic closing message based on status
+            String closingMessage = '\nThanks,\nEventEase Team';
+            if (r.Status__c == 'Confirmed') {
+                closingMessage = '\nWe look forward to seeing you!\n\nThanks,\nEventEase Team';
+            } else if (r.Status__c == 'Cancelled') {
+                closingMessage = '\nIf you have any questions about your cancellation, please contact us.\n\nThanks,\nEventEase Team';
+            }
+            body += closingMessage;
 
-            // HTML version
+            // HTML version with dynamic content
+            String htmlTitle = 'Registration Update';
+            String htmlIntro = bodyIntro;
+            if (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid') {
+                htmlTitle = 'Registration Confirmed';
+            } else if (r.Status__c == 'Cancelled') {
+                htmlTitle = 'Registration Cancelled';
+            }
+            
             String html = '<html><body style="font-family:Arial,Helvetica,sans-serif; color:#111">'
-              + '<h2 style="color:#2E5AAC;margin:0 0 10px">Registration Confirmed</h2>'
+              + '<h2 style="color:#2E5AAC;margin:0 0 10px">' + htmlTitle + '</h2>'
               + '<p>Hello ' + a.Name + ',</p>'
-              + '<p>Your registration is confirmed. Here are the details:</p>'
+              + '<p>' + htmlIntro + ' Here are the details:</p>'
               + '<h3 style="margin:16px 0 8px">Registration Details</h3>'
               + '<table cellpadding="6" cellspacing="0" style="border-collapse:collapse">'
               +   (r.Name != null ? '<tr><td><b>Registration No</b></td><td>' + r.Name + '</td></tr>' : '')
@@ -363,12 +454,23 @@ public with sharing class RegistrationTriggerHandler {
               +   (e.End_Date__c != null ? '<tr><td><b>End Date</b></td><td>' + e.End_Date__c.format() + '</td></tr>' : '')
               +   (e.Mode__c != null ? '<tr><td><b>Mode</b></td><td>' + e.Mode__c + '</td></tr>' : '')
               + '</table>'
-              + (e.Mode__c == 'Virtual' && e.Meeting_Link__c != null ? '<p><b>Join Link:</b> <a href="' + e.Meeting_Link__c + '">Join Meeting</a></p>' : '')
-              + (e.Mode__c != 'Virtual' ? ((e.Venue__c != null ? '<p><b>Venue:</b> ' + e.Venue__c + '</p>' : '') + (e.Venue_Address__c != null ? '<p><b>Address:</b> ' + e.Venue_Address__c + '</p>' : '')) : '')
-              + (e.Owner != null && e.Owner.Name != null ? '<p><b>Organizer:</b> ' + e.Owner.Name + '</p>' : '')
-              + '<p>We look forward to seeing you!</p>'
-              + '<p>Thanks,<br/>EventEase Team</p>'
-              + '</body></html>';
+              + (e.Mode__c == 'Virtual' ? 
+                  (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid' && e.Meeting_Link__c != null ? 
+                    '<p><b>Join Link:</b> <a href="' + e.Meeting_Link__c + '" style="color:#2E5AAC">Join Meeting</a></p>' : 
+                    '<p><b>Join Link:</b> Will be shared after confirmation and payment completion</p>') : '')
+              + (e.Mode__c != 'Virtual' ? 
+                  (r.Status__c == 'Confirmed' && r.Payment_Status__c == 'Paid' ? 
+                    ((e.Venue__c != null ? '<p><b>Venue:</b> ' + e.Venue__c + '</p>' : '') + (e.Venue_Address__c != null ? '<p><b>Address:</b> ' + e.Venue_Address__c + '</p>' : '')) : 
+                    '<p><b>Venue details:</b> Will be shared after confirmation and payment completion</p>') : '')
+              + (e.Owner != null && e.Owner.Name != null ? '<p><b>Organizer:</b> ' + e.Owner.Name + '</p>' : '');
+              
+            // Dynamic HTML closing
+            if (r.Status__c == 'Confirmed') {
+                html += '<p>We look forward to seeing you!</p>';
+            } else if (r.Status__c == 'Cancelled') {
+                html += '<p>If you have any questions about your cancellation, please contact us.</p>';
+            }
+            html += '<p>Thanks,<br/>EventEase Team</p></body></html>';
 
             msg.setHtmlBody(html);
             msg.setPlainTextBody(body);

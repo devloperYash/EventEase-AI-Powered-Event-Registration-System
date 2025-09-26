@@ -1,0 +1,6 @@
+Name,Event_Type__c,Event_Date__c,Event_Mode__c,Venue__c,Address__c,City__c,State__c,Country__c,Capacity__c,Registration_Fee__c,Description__c,Event_Owner__c
+"Tech Conference Mumbai 2024","Conference","2025-01-25","In-Person","Mumbai Convention Center","123 Business District","Mumbai","Maharashtra","India",500,2500,"Annual technology conference featuring latest innovations","005000000000001"
+"Virtual AI Summit 2024","Summit","2025-02-15","Virtual","Zoom Platform","Online","","","",1000,1500,"Global AI summit with industry experts","005000000000001"
+"Product Launch Event","Launch","2025-03-10","Hybrid","Corporate Headquarters","456 Tech Park","Bangalore","Karnataka","India",200,0,"Exclusive product launch for new software platform","005000000000001"
+"Networking Mixer","Networking","2025-04-05","In-Person","Business Club","789 Corporate Avenue","Delhi","Delhi","India",150,500,"Professional networking event for industry leaders","005000000000001"
+"Training Workshop","Workshop","2025-05-20","In-Person","Training Center","321 Learning Street","Pune","Maharashtra","India",50,3000,"Hands-on training workshop for advanced skills","005000000000001"

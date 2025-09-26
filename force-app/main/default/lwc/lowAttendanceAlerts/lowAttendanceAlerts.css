@@ -1,0 +1,271 @@
+/* Summary Cards */
+.summary-card {
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.summary-number {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.summary-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Summary card colors */
+.summary-card.critical {
+    background: linear-gradient(135deg, #ea001e 0%, #d63384 100%);
+}
+
+.summary-card.warning {
+    background: linear-gradient(135deg, #ffb75d 0%, #fd7e14 100%);
+}
+
+.summary-card.info {
+    background: linear-gradient(135deg, #0dcaf0 0%, #0d6efd 100%);
+}
+
+/* Threshold Settings */
+.threshold-settings {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* Alert Cards */
+.alert-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.alert-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.alert-card.critical {
+    border-left-color: #ea001e;
+    background: linear-gradient(90deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.alert-card.warning {
+    border-left-color: #ffb75d;
+    background: linear-gradient(90deg, #fffbf0 0%, #ffffff 100%);
+}
+
+.alert-card.low {
+    border-left-color: #0dcaf0;
+    background: linear-gradient(90deg, #f0fcff 0%, #ffffff 100%);
+}
+
+/* Alert Header */
+.alert-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.alert-icon {
+    margin-right: 0.5rem;
+}
+
+.alert-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Alert Details */
+.alert-details {
+    margin-left: 1.5rem;
+}
+
+.event-info {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0 0 0.25rem 0;
+}
+
+.alert-message {
+    font-size: 0.875rem;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Capacity Stats */
+.capacity-stats {
+    text-align: right;
+}
+
+.capacity-numbers {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.capacity-percentage {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.capacity-percentage[data-level="critical"] {
+    color: #ea001e;
+}
+
+.capacity-percentage[data-level="warning"] {
+    color: #ffb75d;
+}
+
+.capacity-percentage[data-level="low"] {
+    color: #0dcaf0;
+}
+
+.days-until {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Alert Actions */
+.alert-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* No Alerts State */
+.no-alerts-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.no-alerts-state h3 {
+    color: #28a745;
+    margin: 0;
+}
+
+.no-alerts-state p {
+    margin: 0;
+}
+
+/* Footer */
+.last-updated {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+}
+
+/* Loading States */
+.slds-align_absolute-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .summary-number {
+        font-size: 1.5rem;
+    }
+    
+    .summary-label {
+        font-size: 0.75rem;
+    }
+    
+    .alert-title {
+        font-size: 1rem;
+    }
+    
+    .capacity-numbers {
+        font-size: 1rem;
+    }
+    
+    .alert-actions {
+        margin-top: 1rem;
+        justify-content: stretch;
+    }
+    
+    .alert-actions lightning-button-group {
+        width: 100%;
+    }
+}
+
+/* Animation for new alerts */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.alert-card {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Pulse animation for critical alerts */
+@keyframes pulse {
+    0% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    50% { box-shadow: 0 4px 12px rgba(234, 0, 30, 0.3); }
+    100% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+}
+
+.alert-card.critical {
+    animation: slideIn 0.3s ease-out, pulse 2s ease-in-out infinite;
+}
+
+/* Scrollable container */
+.alerts-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.alerts-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.alerts-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.alerts-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.alerts-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

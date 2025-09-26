@@ -1,0 +1,62 @@
+<template>
+    <lightning-card title="Bulk Registration" icon-name="standard:process">
+        <div class="slds-p-around_small">
+            <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12">
+                    <lightning-button-group>
+                        <lightning-button label="Add Row" onclick={handleAddRow}></lightning-button>
+                        <lightning-button label="Delete Selected" onclick={handleDeleteSelected} disabled={noSelection}></lightning-button>
+                        <lightning-button label="Import CSV" onclick={openFileDialog}></lightning-button>
+                        <input type="file" accept=".csv" style="display:none" onchange={handleFileChange} data-id="file"/>
+                    </lightning-button-group>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-text-align_right">
+                    <lightning-combobox
+                        name="massStatus"
+                        label="Mass Update Status"
+                        value={massStatus}
+                        placeholder="Select status"
+                        options={statusOptions}
+                        onchange={handleMassStatusChange}
+                        class="slds-m-right_small"
+                    ></lightning-combobox>
+                    <lightning-button label="Apply" onclick={applyMassStatus} variant="neutral" class="slds-m-right_small"></lightning-button>
+                    <lightning-button label="Validate" onclick={handleValidate} variant="neutral" class="slds-m-right_small"></lightning-button>
+                    <lightning-button label="Save All" onclick={handleSaveAll} variant="brand"></lightning-button>
+                </div>
+            </div>
+
+            <div class="slds-m-bottom_small slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12">
+                    <lightning-input type="search" label="Search" placeholder="Search name or email" value={searchTerm} onchange={handleSearch}></lightning-input>
+                </div>
+            </div>
+
+            <template if:true={loading}>
+                <div class="slds-p-around_medium slds-align_absolute-center">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <lightning-datatable
+                key-field="id"
+                data={filteredRows}
+                columns={columns}
+                draft-values={draftValues}
+                onsave={handleInlineSave}
+                onrowselection={handleRowSelection}
+                hide-checkbox-column="false"
+                show-row-number-column="true"
+                >
+            </lightning-datatable>
+
+            <template if:true={serverMessages}>
+                <div class="slds-m-top_small">
+                    <template for:each={serverMessages} for:item="msg">
+                        <div key={msg} class="slds-text-color_weak">{msg}</div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

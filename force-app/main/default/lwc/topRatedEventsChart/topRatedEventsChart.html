@@ -1,0 +1,191 @@
+<template>
+    <lightning-card title="⭐ Top-Rated Events" icon-name="standard:feedback">
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading ratings..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template if:false={isLoading}>
+                <!-- Chart Controls -->
+                <div class="chart-controls slds-m-bottom_medium">
+                    <div class="slds-grid slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-combobox
+                                name="timeRange"
+                                label="Time Range"
+                                value={selectedTimeRange}
+                                options={timeRangeOptions}
+                                onchange={handleTimeRangeChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-combobox
+                                name="eventType"
+                                label="Event Type"
+                                value={selectedEventType}
+                                options={eventTypeOptions}
+                                onchange={handleEventTypeChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input
+                                type="number"
+                                label="Min. Feedback Count"
+                                value={minFeedbackCount}
+                                min="1"
+                                onchange={handleMinFeedbackChange}>
+                            </lightning-input>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <template if:true={hasChartData}>
+                    <div class="chart-container slds-m-bottom_medium">
+                        <canvas lwc:ref="chartCanvas" class="chart-canvas"></canvas>
+                    </div>
+                </template>
+
+                <!-- Top Events List -->
+                <template if:true={hasTopEvents}>
+                    <div class="top-events-list">
+                        <h3 class="section-title slds-m-bottom_small">🏆 Top Performing Events</h3>
+                        <template for:each={topEvents} for:item="event" for:index="index">
+                            <div key={event.eventId} class="event-rating-card">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <div class="slds-col slds-size_1-of-12">
+                                        <div class="ranking-badge" data-rank={event.rank}>
+                                            #{event.rank}
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_7-of-12">
+                                        <div class="event-info">
+                                            <h4 class="event-name">{event.eventName}</h4>
+                                            <p class="event-details">
+                                                {event.eventType} • {event.eventDate} • {event.attendeeCount} attendees
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 slds-text-align_center">
+                                        <div class="rating-display">
+                                            <div class="rating-stars">
+                                                <template for:each={event.starArray} for:item="star">
+                                                    <lightning-icon 
+                                                        key={star.id}
+                                                        icon-name={star.icon} 
+                                                        size="x-small" 
+                                                        variant={star.variant}>
+                                                    </lightning-icon>
+                                                </template>
+                                            </div>
+                                            <div class="rating-score">{event.averageRating}</div>
+                                            <div class="feedback-count">{event.feedbackCount} reviews</div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-12 slds-text-align_right">
+                                        <div class="event-actions">
+                                            <lightning-button-menu 
+                                                alternative-text="Event Actions" 
+                                                icon-size="x-small"
+                                                menu-alignment="right">
+                                                <lightning-menu-item 
+                                                    value="view" 
+                                                    label="View Event"
+                                                    onclick={handleViewEvent}
+                                                    data-event-id={event.eventId}>
+                                                </lightning-menu-item>
+                                                <lightning-menu-item 
+                                                    value="feedback" 
+                                                    label="View Feedback"
+                                                    onclick={handleViewFeedback}
+                                                    data-event-id={event.eventId}>
+                                                </lightning-menu-item>
+                                                <lightning-menu-item 
+                                                    value="clone" 
+                                                    label="Clone Event"
+                                                    onclick={handleCloneEvent}
+                                                    data-event-id={event.eventId}>
+                                                </lightning-menu-item>
+                                            </lightning-button-menu>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Rating Statistics -->
+                <template if:true={hasStatistics}>
+                    <div class="rating-statistics slds-m-top_medium">
+                        <h3 class="section-title slds-m-bottom_small">📊 Rating Statistics</h3>
+                        <div class="slds-grid slds-wrap slds-gutters_small">
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="stat-card">
+                                    <div class="stat-value">{statistics.averageRating}</div>
+                                    <div class="stat-label">Average Rating</div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="stat-card">
+                                    <div class="stat-value">{statistics.totalFeedback}</div>
+                                    <div class="stat-label">Total Reviews</div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="stat-card">
+                                    <div class="stat-value">{statistics.highRatedEvents}</div>
+                                    <div class="stat-label">4+ Star Events</div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="stat-card">
+                                    <div class="stat-value">{statistics.responseRate}%</div>
+                                    <div class="stat-label">Response Rate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- No Data State -->
+                <template if:false={hasData}>
+                    <div class="no-data-state slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:info" size="large" variant="inverse"></lightning-icon>
+                        <h3 class="slds-m-top_small">No Rating Data Available</h3>
+                        <p class="slds-m-top_small">No events with feedback found for the selected criteria</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Card Footer -->
+        <div slot="footer" class="slds-card__footer">
+            <div class="slds-grid slds-grid_align-spread">
+                <div class="slds-col">
+                    <p class="last-updated">Last updated: {lastUpdated}</p>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <lightning-button-group>
+                        <lightning-button
+                            label="Refresh"
+                            icon-name="utility:refresh"
+                            onclick={handleRefresh}
+                            variant="neutral">
+                        </lightning-button>
+                        <lightning-button
+                            label="Export Report"
+                            icon-name="utility:download"
+                            onclick={handleExport}
+                            variant="neutral">
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

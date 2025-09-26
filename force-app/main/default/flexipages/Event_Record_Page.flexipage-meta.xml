@@ -65,6 +65,18 @@
   <flexiPageRegions>
     <itemInstances>
       <componentInstance>
+        <componentName>c:eventDashboard</componentName>
+        <identifier>c_eventDashboard</identifier>
+      </componentInstance>
+    </itemInstances>
+    <itemInstances>
+      <componentInstance>
+        <componentName>c:bulkRegistration</componentName>
+        <identifier>c_bulkRegistration</identifier>
+      </componentInstance>
+    </itemInstances>
+    <itemInstances>
+      <componentInstance>
         <componentName>flexipage:tabset</componentName>
         <identifier>mainTabset</identifier>
         <componentInstanceProperties>

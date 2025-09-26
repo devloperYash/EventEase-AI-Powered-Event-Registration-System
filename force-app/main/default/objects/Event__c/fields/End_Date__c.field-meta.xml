@@ -2,5 +2,5 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
   <fullName>End_Date__c</fullName>
   <label>End Date</label>
-  <type>Date</type>
+  <type>DateTime</type>
 </CustomField>

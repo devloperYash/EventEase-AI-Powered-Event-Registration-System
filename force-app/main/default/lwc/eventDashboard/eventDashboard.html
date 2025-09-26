@@ -1,0 +1,112 @@
+<template>
+    <lightning-card title="Event Dashboard" icon-name="standard:event">
+        <template if:true={loading}>
+            <div class="slds-p-around_medium slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={stats}>
+            <div class="slds-p-around_medium">
+                <lightning-layout multiple-rows>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_small">
+                                <div class="slds-text-heading_small slds-truncate" title={stats.name}>{stats.name}</div>
+                                <div class="slds-text-color_weak slds-m-top_x-small">
+                                    <span class="slds-m-right_medium">Status: <strong>{stats.status}</strong></span>
+                                    <span class="slds-m-right_medium">Mode: <strong>{stats.mode}</strong></span>
+                                    <span>Start: <strong>{startDateFormatted}</strong></span>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_small slds-align_absolute-center">
+                                <div class="slds-grid slds-gutters_small">
+                                    <div class="slds-col">
+                                        <lightning-badge label={capacityLabel}></lightning-badge>
+                                    </div>
+                                    <div class="slds-col">
+                                        <lightning-badge label={totalRegistrationsLabel}></lightning-badge>
+                                    </div>
+                                    <div class="slds-col">
+                                        <lightning-badge label={feedbackLabel}></lightning-badge>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12">
+                                <lightning-progress-ring value={capacityPercent} size="large"></lightning-progress-ring>
+                                <div class="slds-text-color_weak slds-m-top_x-small">Capacity usage</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12">
+                                <div class="slds-m-bottom_small"><lightning-badge label={confirmedLabel}></lightning-badge></div>
+                                <div class="slds-m-bottom_small"><lightning-badge label={pendingLabel}></lightning-badge></div>
+                                <div class="slds-m-bottom_small"><lightning-badge label={cancelledLabel}></lightning-badge></div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-button-group>
+                                    <lightning-button label="Register Attendee" variant="neutral" onclick={navigateToSingleRegistration}></lightning-button>
+                                    <lightning-button label="Bulk Register" variant="neutral" onclick={navigateToBulkRegistration}></lightning-button>
+                                </lightning-button-group>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-align_right">
+                                <lightning-button label="Send Promotion Mails" variant="brand-outline" onclick={handleSendPromotionMails} class="slds-m-right_small" disabled={sendingPromotion}></lightning-button>
+                                <lightning-button label="Send Reminders" variant="brand" onclick={handleSendReminders} class="slds-m-right_small"></lightning-button>
+                                <lightning-button label="Close Registration" variant="destructive" onclick={handleCloseRegistration}></lightning-button>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-m-top_small">
+                            <div class="slds-text-title_caps slds-m-bottom_x-small">New Leads (Preview)</div>
+                            <template if:true={hasNewLeads}>
+                                <lightning-datatable
+                                    key-field="Id"
+                                    data={newLeads}
+                                    columns={leadColumns}
+                                    hide-checkbox-column="true"
+                                    show-row-number-column="true">
+                                </lightning-datatable>
+                            </template>
+                            <template if:false={hasNewLeads}>
+                                <div class="slds-text-color_weak">No new leads to show.</div>
+                            </template>
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-m-top_small">
+                            <div class="slds-text-title_caps slds-m-bottom_x-small">Registered Attendees</div>
+                            <template if:true={hasRegistrations}>
+                                <lightning-datatable
+                                    key-field="Id"
+                                    data={registrations}
+                                    columns={registrationColumns}
+                                    hide-checkbox-column="true"
+                                    show-row-number-column="true">
+                                </lightning-datatable>
+                            </template>
+                            <template if:false={hasRegistrations}>
+                                <div class="slds-text-color_weak">No registrations yet.</div>
+                            </template>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </template>
+
+        <template if:true={message}>
+            <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                <lightning-formatted-text value={message}></lightning-formatted-text>
+            </div>
+        </template>
+    </lightning-card>
+</template>

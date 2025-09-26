@@ -1,0 +1,11 @@
+Name,Email__c,Phone__c,Job_Title__c,Company__c,Interest__c
+"Priya Sharma","priya.sharma@techcorp.com","9876543210","Software Engineer","TechCorp Solutions","Technology"
+"Rajesh Kumar","rajesh.kumar@innovate.com","9876543211","Product Manager","Innovate Labs","Product Development"
+"Anita Desai","anita.desai@startup.com","9876543212","CEO","StartupVenture","Entrepreneurship"
+"Vikram Singh","vikram.singh@consulting.com","9876543213","Senior Consultant","Business Consulting Group","Business Strategy"
+"Meera Patel","meera.patel@finance.com","9876543214","Financial Analyst","Finance Solutions","Finance"
+"Arjun Reddy","arjun.reddy@marketing.com","9876543215","Marketing Director","Digital Marketing Co","Marketing"
+"Kavya Nair","kavya.nair@design.com","9876543216","UX Designer","Creative Design Studio","Design"
+"Rohit Gupta","rohit.gupta@sales.com","9876543217","Sales Manager","Sales Excellence","Sales"
+"Sneha Joshi","sneha.joshi@hr.com","9876543218","HR Manager","People Solutions","Human Resources"
+"Amit Verma","amit.verma@operations.com","9876543219","Operations Head","Operational Excellence","Operations"

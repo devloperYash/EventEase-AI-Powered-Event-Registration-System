@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Event Registration Wizard</masterLabel>
+    <description>Landing → Lead → Attendee → Event → Confirmation multi-step registration</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__HomePage">
+            <property name="eventId" type="String" label="Preselect Event Id (optional)" description="If set, loads and preselects this Event on the landing step"/>
+            <property name="confirmOnCreate" type="Boolean" label="Confirm Registration on Create" default="false" description="If true, sets Registration status to Confirmed instead of Pending"/>
+        </targetConfig>
+        <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Event__c</object>
+            </objects>
+            <property name="confirmOnCreate" type="Boolean" label="Confirm Registration on Create" default="false" description="If true, sets Registration status to Confirmed instead of Pending"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -6,13 +6,36 @@ package.xml
 
 # LWC configuration files
 **/jsconfig.json
-**/.eslintrc.json
 
 # LWC Jest
-**/__tests__/**
+**/__tests__/
 
 # Ignore stray placeholders (Phase 2 scaffolding)
 force-app/main/default/objects/Event__c/fields/BannerImageURL__c.field-meta.xml
 
 # TEMP: Exclude Organizer role due to internal deploy error (ErrorId 1306876300)
 force-app/main/default/roles/Organizer.role-meta.xml
+
+# TEMP (Submission): Exclude optional analytics to avoid non-critical deploy errors
+# Revenue trend LWC and Apex controller
+force-app/main/default/lwc/revenueTrendGraph/**
+force-app/main/default/classes/RevenueTrendController.cls
+force-app/main/default/classes/RevenueTrendController.cls-meta.xml
+
+# Chart.js static resource (only used by revenueTrendGraph)
+force-app/main/default/staticresources/chartjs.resource
+force-app/main/default/staticresources/chartjs.resource-meta.xml
+
+# EventEase Reports folder and two custom report types
+force-app/main/default/reports/EventEase_Reports/**
+force-app/main/default/reports/EventEase_Reports-meta.xml
+force-app/main/default/reportTypes/Event_with_Registrations.reportType-meta.xml
+force-app/main/default/reportTypes/Event_with_Registrations_and_Feedback.reportType-meta.xml
+
+# Top Rated Events LWC and Apex controller
+force-app/main/default/lwc/topRatedEventsChart/**
+force-app/main/default/classes/TopRatedEventsController.cls
+force-app/main/default/classes/TopRatedEventsController.cls-meta.xml
+
+# Lead validation rule (org-only)
+force-app/main/default/objects/Lead/validationRules/Require_Event_Interest__c.validationRule-meta.xml

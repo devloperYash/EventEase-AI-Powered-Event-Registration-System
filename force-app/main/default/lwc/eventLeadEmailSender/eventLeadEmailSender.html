@@ -1,0 +1,125 @@
+<template>
+    <lightning-card title="Send Event Invitations to Leads" icon-name="standard:email">
+        <div class="slds-p-horizontal_medium">
+            <!-- Event Information Display -->
+            <div class="slds-box slds-theme_default slds-m-bottom_medium">
+                <h3 class="slds-text-heading_small slds-m-bottom_small">Event Details</h3>
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <p><strong>Event Name:</strong> {eventName}</p>
+                        <p><strong>Date:</strong> {eventDate}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <p><strong>Mode:</strong> {eventMode}</p>
+                        <p><strong>Fee:</strong> {eventFee}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lead Selection Section -->
+            <div class="slds-m-bottom_medium">
+                <h3 class="slds-text-heading_small slds-m-bottom_small">Select Leads to Invite</h3>
+                
+                <!-- Filter Options -->
+                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning-combobox
+                            name="leadStatus"
+                            label="Lead Status"
+                            value={selectedStatus}
+                            placeholder="All Statuses"
+                            options={statusOptions}
+                            onchange={handleStatusChange}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning-combobox
+                            name="eventInterest"
+                            label="Event Interest"
+                            value={selectedInterest}
+                            placeholder="All Interests"
+                            options={interestOptions}
+                            onchange={handleInterestChange}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning-button
+                            label="Refresh Leads"
+                            onclick={loadLeads}
+                            variant="neutral"
+                            class="slds-m-top_large">
+                        </lightning-button>
+                    </div>
+                </div>
+
+                <!-- Select All Option -->
+                <div class="slds-m-bottom_small">
+                    <lightning-input
+                        type="checkbox"
+                        label="Select All Leads"
+                        checked={selectAll}
+                        onchange={handleSelectAll}>
+                    </lightning-input>
+                </div>
+
+                <!-- Leads Data Table -->
+                <template if:true={leads.length}>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={leads}
+                        columns={columns}
+                        selected-rows={selectedLeadIds}
+                        onrowselection={handleRowSelection}
+                        max-row-selection="50">
+                    </lightning-datatable>
+                </template>
+
+                <template if:false={leads.length}>
+                    <div class="slds-text-align_center slds-p-around_medium">
+                        <p>No leads found matching the criteria.</p>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Email Preview Section -->
+            <template if:true={selectedLeadIds.length}>
+                <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Email Preview</h3>
+                    <p><strong>Subject:</strong> Invitation: {eventName} - Register Now!</p>
+                    <p><strong>Recipients:</strong> {selectedLeadIds.length} lead(s) selected</p>
+                    <div class="slds-m-top_small">
+                        <lightning-formatted-rich-text value={emailPreview}></lightning-formatted-rich-text>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Action Buttons -->
+            <div class="slds-text-align_center slds-m-top_medium">
+                <lightning-button
+                    label="Send Invitations"
+                    onclick={sendInvitations}
+                    variant="brand"
+                    disabled={isSending}
+                    class="slds-m-right_small">
+                </lightning-button>
+                <lightning-button
+                    label="Cancel"
+                    onclick={handleCancel}
+                    variant="neutral">
+                </lightning-button>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isSending}>
+                <lightning-spinner alternative-text="Sending invitations..." size="medium"></lightning-spinner>
+            </template>
+
+            <!-- Success/Error Messages -->
+            <template if:true={showMessage}>
+                <div class={messageClass}>
+                    <p>{message}</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
